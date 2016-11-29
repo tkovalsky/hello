@@ -3,8 +3,10 @@
 {% block title %}Homepage - {{ block.super }}  {% endblock title %}
 
 {% block content %} 
-	<h1>Hello, Web</h1>
-	<p>I am a basic website</p>
-
+	{% for thing in things %}
+	<h2><a href="{% url 'thing_detail' slug=thing.slug %}">
+	{{ thing.name }}</a> </h2>
+	<p>{{ thing.description }} </p>
+	{% endfor %}
 {% endblock content %}
 
