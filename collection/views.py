@@ -44,7 +44,6 @@ def edit_thing(request, slug):
         if form.is_valid():
 	    #save the new data
             form.save()
-
             messages.success(request, 'Thing details updated.')
             return redirect('thing_detail', slug=thing.slug)
 
