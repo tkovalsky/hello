@@ -1,7 +1,9 @@
-from django.shortcuts import render, redirect
-from django.template.loader import get_template
 from django.core.mail import EmailMessage
+from django.contrib import messages
+from django.http import Http404
+from django.shortcuts import render, redirect
 from django.template import Context
+from django.template.loader import get_template
 
 from collection.forms import ThingForm, ContactForm
 from collection.models import Thing
@@ -23,8 +25,12 @@ def thing_detail(request, slug):
         'thing':thing,
     })
 
+@login_required
 def edit_thing(request, slug):
     thing=Thing.objects.get(slug=slug)
+    if thing.user != request.user:
+        raise Http404
+
     form_class = ThingForm
 
     if request.method == 'POST':
@@ -34,8 +40,11 @@ def edit_thing(request, slug):
         if form.is_valid():
 	    #save the new data
             form.save()
+
+            messages.success(request, 'Thing details updated.')
             return redirect('thing_detail', slug=thing.slug)
-	#other just create the form
+
+    #other just create the form
     else:
         form = form_class(instance=thing)
 
